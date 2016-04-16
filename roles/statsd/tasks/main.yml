@@ -1,0 +1,6 @@
+---
+- name: clone statsd
+  git: repo=https://github.com/etsy/statsd.git dest=/src/statsd version=v0.7.2 update=no
+
+- name: Configure statsd
+  template: src=localConfig.js.j2 dest=/src/statsd/config.js

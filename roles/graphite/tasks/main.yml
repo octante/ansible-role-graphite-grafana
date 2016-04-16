@@ -1,0 +1,124 @@
+---
+- name: install required packages for graphite debian/ubuntu
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - python-django-tagging
+    - python-simplejson
+    - python-memcache
+    - python-ldap
+    - python-cairo
+    - python-pysqlite2
+    - python-support
+    - python-pip
+    - gunicorn
+    - supervisor
+    - nginx
+    - nodejs
+    - git
+    - wget
+    - curl
+    - openjdk-7-jre
+    - build-essential
+    - python-dev
+    - npm
+
+- name: ensure graphite directory exists
+  file:
+    path: /opt/graphite/
+    state: directory
+
+#- name: install npm
+#  apt: pkg=npm state=latest
+
+- name: install graphite python deps and create virtualenv if needed
+  pip: name={{ item }}
+  with_items:
+    - Django==1.5
+    - pytz
+    - Twisted==11.1.0
+
+- name: install chokidar
+  npm: name=chokidar global=yes
+
+- name: install ini
+  npm: name=ini global=yes
+
+# WHISPER
+
+- name: clone whisper source
+  git: repo=https://github.com/graphite-project/whisper.git dest=/src/whisper version=0.9.x update=no
+
+- name: install whisper
+  command: python setup.py install chdir=/src/whisper
+
+
+# CARBON
+
+- name: clone carbon source
+  git: repo=https://github.com/graphite-project/carbon.git dest=/src/carbon version=0.9.x update=no
+
+- name: install carbon
+  command: python setup.py install chdir=/src/carbon
+
+
+# GRAPHITE WEBAPP
+
+- name: clone graphite-web source
+  git: repo=https://github.com/graphite-project/graphite-web.git dest=/src/graphite-web version=0.9.x update=no
+
+- name: install graphite-web
+  command: python setup.py install chdir=/src/graphite-web
+
+
+# Configure Whisper, Carbon and Graphite-Web
+
+- name: Configure carbon cache
+  template: src=carbon.conf.j2 dest=/opt/graphite/conf/carbon.conf mode=0644
+
+- name: Configure carbon storage schema
+  template: src=storage-schemas.conf.j2 dest=/opt/graphite/conf/storage-schemas.conf mode=0644
+
+- name: Configure carbon storage aggregation
+  template: src=storage-aggregation.conf.j2 dest=/opt/graphite/conf/storage-aggregation.conf mode=0644
+
+- name: graphite conf
+  template: src=local_settings.py.j2 dest=/opt/graphite/webapp/graphite/local_settings.py mode=0644
+
+- name: create whisper storage folder
+  file: path=/opt/graphite/storage/whisper state=directory recurse=yes mode=0775
+
+- name: create graphite sqlite database
+  file: path=/opt/graphite/storage/graphite.db state=touch mode=0664
+
+- name: create graphite storage
+  file: path=/opt/graphite/storage/index state=touch group=www-data owner=www-data
+
+- name: syncdb for graphite
+  shell: export PYTHONPATH=/opt/graphite/webapp/; python /opt/graphite/webapp/graphite/manage.py syncdb --noinput
+
+- name: graphite log folder
+  file: state=directory path=/opt/graphite/storage/log/webapp
+
+
+# SUPERVISOR
+
+- name: Copy supervisor configuration for graphite
+  template: src=supervisor-graphite.conf.j2 dest=/etc/supervisor/conf.d/graphite.conf
+  notify:
+    - reload supervisor
+
+# NGinx
+
+- name: Set file permissions
+  command: /bin/chown -R www-data:www-data /opt/graphite
+
+#- name: Copy nginx configuration for graphite
+#  template: src=nginx-graphite.conf.j2 dest=/etc/nginx/nginx.conf owner=www-data group=www-data
+
+- name: Copy nginx virtualhosts for graphite
+  template: src=nginx-virtualhosts.conf.j2 dest=/etc/nginx/sites-available/graphite.conf owner=www-data group=www-data
+
+- name: nginx virtualhosts symbolic link
+  file: src=/etc/nginx/sites-available/graphite.conf dest=/etc/nginx/sites-enabled/graphite.conf state=link
+  notify:
+    - reload nginx

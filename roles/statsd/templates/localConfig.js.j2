@@ -1,0 +1,11 @@
+{
+  graphitePort: 2003,
+  mgmt_port: 8126,
+  graphiteHost: "localhost",
+  port: 8125,
+  backends: [ "./backends/graphite" ],
+  flushInterval: 10000,
+  graphite: {
+    legacyNamespace: false
+  }
+}
