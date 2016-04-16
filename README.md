@@ -53,4 +53,4 @@ $ ansible-playbook -v -i ansible_hosts playbook.yml -e target=X.X.X.X --sudo -K
 
 *(You should be able to use "target" instead of X.X.X.X in the command line but right now it's not working)*
 
-This ansible role is based on [Guillaume Montard](https://github.com/gmontard/grafana-graphite-statsd-ansible-vagrant/blob/master/LICENSE) repository.
+This ansible role is based on [Guillaume Montard](https://github.com/gmontard/grafana-graphite-statsd-ansible-vagrant) repository.
