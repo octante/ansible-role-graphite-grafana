@@ -1,4 +1,4 @@
-# Grafana, Graphite & StatsD with Ansible
+# Grafana & Graphite with Ansible
 
 This playbook let you easily setup [Grafana](http://grafana.org/), [Graphite](http://graphite.readthedocs.org/en/latest/) and [StatsD](https://github.com/etsy/statsd/).
 You can use it to provison a dedicated server or even a virtual machine using the VagrantFile and Virtualbox
@@ -53,4 +53,4 @@ $ ansible-playbook -v -i ansible_hosts playbook.yml -e target=X.X.X.X --sudo -K
 
 *(You should be able to use "target" instead of X.X.X.X in the command line but right now it's not working)*
 
-* This ansible role is based on [Guillaume Montard](https://github.com/gmontard/grafana-graphite-statsd-ansible-vagrant/blob/master/LICENSE) repository.
+This ansible role is based on [Guillaume Montard](https://github.com/gmontard/grafana-graphite-statsd-ansible-vagrant/blob/master/LICENSE) repository.
