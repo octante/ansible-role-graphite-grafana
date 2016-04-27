@@ -17,16 +17,16 @@ What gets installed with this playbook:
 * And finally [Grafana](http://grafana.org/)
 
 After that you will be able to access:
-- **StatsD**: http://www.grafana.dev:8125 (Using UDP)
-- **Graphite**: http://www.grafana.dev:81
-- **Grafana**: http://www.grafana.dev
+- **StatsD**: http://www.monitoring.dev:8125 (Using UDP)
+- **Graphite**: http://www.monitoring.dev:81 or http://www.monitoring.dev/graphite
+- **Grafana**: http://www.monitoring.dev
 
 
 ## Running it with Vagrant
 
 If you want to install Grafana/Graphite on a VM using Vagrant, you need to install [Vagrant](http://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/) first.
 
-Change "private_ip" from Vagrantfile and vagrant_hosts.
+Change _private_ip_ in _Vagrantfile_ and _vagrant_hosts_ files.
 
 Then hit:
 ```
@@ -46,11 +46,6 @@ You also need to **change the _remote_user_ variable** in _playbook.yml_ to the 
 $ ansible-playbook -v -i ansible_hosts playbook.yml -e target=X.X.X.X
 ```
 
-Also if you are **deploying to Ubuntu**, since you won't be able to login as root, you need to pass the *--sudo -K* option:
-```
-$ ansible-playbook -v -i ansible_hosts playbook.yml -e target=X.X.X.X --sudo -K
-```
-
-*(You should be able to use "target" instead of X.X.X.X in the command line but right now it's not working)*
+Tip: If you can't include ssh keys, you can force ansible to request the server password including the option "--ask-pass"
 
 This ansible role is based on [Guillaume Montard](https://github.com/gmontard/grafana-graphite-statsd-ansible-vagrant) repository.

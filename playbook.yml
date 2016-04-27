@@ -1,6 +1,6 @@
 ---
 - hosts: "{{target}}"
-  remote_user: root
+  remote_user: {{remote_user}}
   sudo: True
   vars:
     user: root
