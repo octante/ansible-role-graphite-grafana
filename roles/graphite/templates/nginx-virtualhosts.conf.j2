@@ -1,8 +1,9 @@
 server {
-
     listen 80;
-
     server_name {{ graphite.nginx_server_name }};
+
+#    auth_basic                 "Restricted";
+#    auth_basic_user_file       passwdfile;
 
     location / {
         proxy_pass                 http://127.0.0.1:3000/;
@@ -25,6 +26,7 @@ server {
         proxy_busy_buffers_size    64k;
         proxy_temp_file_write_size 64k;
     }
+
     location /graphite/ {
         proxy_pass                 http://127.0.0.1:8000/;
         proxy_set_header           X-Real-IP   $remote_addr;
@@ -55,6 +57,9 @@ server {
 server {
     listen 81;
     server_name {{ graphite.nginx_server_name }};
+
+    auth_basic                 "Restricted";
+    auth_basic_user_file       passwdfile;
 
     open_log_file_cache max=1000 inactive=20s min_uses=2 valid=1m;
 

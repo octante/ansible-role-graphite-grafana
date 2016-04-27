@@ -13,3 +13,6 @@
 
 - name: Remove temporary folder
   command: rm /src/grafana.tar.gz
+
+- name: Copy configuration file
+  template: src=custom.ini.j2 dest=/opt/grafana/conf/custom.ini

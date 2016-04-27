@@ -21,6 +21,7 @@
     - build-essential
     - python-dev
     - npm
+    - python-passlib
 
 - name: ensure graphite directory exists
   file:
