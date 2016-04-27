@@ -35,7 +35,7 @@ $ vagrant up
 
 ## Deploying with Ansible
 
-Before running Ansible **you have to add the IP address of your target server into the _ansible_hosts_ file**.
+Before running Ansible **you need to add the IP address of your target server into the _ansible_hosts_ file**.
 ```
 $ vi ansible_hosts
 ```
